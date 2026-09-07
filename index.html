@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGMA · Control de acceso y asistencia</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============================================================
+     MÓDULO 1 · Inicio de sesión
+     ============================================================ -->
+<section class="login-screen" id="login-screen" aria-label="Inicio de sesión">
+  <div class="login-visual" aria-hidden="true">
+    <div class="login-visual__brand">
+      <span class="mono">SG</span> SIGMA
+    </div>
+    <div class="login-visual__frame"></div>
+    <div class="login-visual__copy">
+      <h2>Control de acceso por reconocimiento facial</h2>
+      <p>Visualiza en tiempo real quién ingresa, cuándo y si el acceso fue permitido, con datos enviados por los dispositivos ESP32-CAM instalados en cada puerta.</p>
+    </div>
+    <div class="login-visual__foot">IEAT Turbo · Plataforma administrativa</div>
+  </div>
+
+  <div class="login-panel">
+    <div class="login-card">
+      <h1>Iniciar sesión</h1>
+      <p class="login-card__subtitle">Acceso para administradores y personal autorizado.</p>
+
+      <div class="login-error-banner" id="login-error-banner" role="alert">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="login-error-text">Correo o contraseña incorrectos.</span>
+      </div>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="login-user">Correo o usuario</label>
+          <div class="field-input-wrap">
+            <input type="text" id="login-user" name="usuario" autocomplete="username" placeholder="admin@ieatturbo.edu.co" required>
+          </div>
+          <div class="field-error" id="error-user">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Ingresa tu correo o usuario.
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="login-pass">Contraseña</label>
+          <div class="field-input-wrap">
+            <input type="password" id="login-pass" name="password" autocomplete="current-password" placeholder="••••••••" required>
+            <button type="button" class="toggle-visibility" id="toggle-pass" aria-label="Mostrar contraseña" aria-pressed="false">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="field-error" id="error-pass">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Ingresa tu contraseña.
+          </div>
+        </div>
+
+        <div class="field-row">
+          <label class="checkbox-inline"><input type="checkbox" id="login-remember"> Recordarme</label>
+          <button type="button" class="btn-ghost" id="forgot-pass-btn">¿Olvidaste tu contraseña?</button>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="login-submit">
+          <span id="login-submit-label">Iniciar sesión</span>
+        </button>
+      </form>
+
+      <div class="login-hint">
+        <strong>Demo:</strong> cualquier correo válido y una contraseña de al menos 4 caracteres inician sesión. Ejemplo: <span class="mono">admin@ieatturbo.edu.co</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     APP SHELL — Dashboard administrativo
+     ============================================================ -->
+<div class="app-shell" id="app-shell">
+  <div class="sidebar-scrim" id="sidebar-scrim"></div>
+
+  <aside class="sidebar" id="sidebar" aria-label="Navegación principal">
+    <div class="sidebar__brand">
+      <span class="sidebar__brand-mark mono">SG</span>
+      <span class="sidebar__brand-text">SIGMA<small>IEAT Turbo</small></span>
+    </div>
+    <nav class="sidebar__nav" id="sidebar-nav">
+      <button class="nav-item" data-view="dashboard" aria-current="page">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-item" data-view="registro-accesos">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h4"/><path d="M9 3h6l6 6v10a2 2 0 0 1-2 2h-4"/><path d="M9 3v6H3"/></svg>
+        Registro de accesos
+      </button>
+      <button class="nav-item" data-view="estudiantes">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Estudiantes
+      </button>
+      <button class="nav-item" data-view="biometrico">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4M15 3h4a2 2 0 0 1 2 2v4M9 21H5a2 2 0 0 1-2-2v-4M15 21h4a2 2 0 0 0 2-2v-4"/><path d="M8 12a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z"/></svg>
+        Registro biométrico
+      </button>
+      <button class="nav-item" data-view="historial">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        Historial
+      </button>
+      <button class="nav-item" data-view="reportes">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-4"/></svg>
+        Reportes
+      </button>
+      <button class="nav-item" data-view="alertas">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Alertas
+        <span class="nav-item__badge" id="alerts-badge">0</span>
+      </button>
+      <button class="nav-item" data-view="configuracion">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+        Configuración
+      </button>
+    </nav>
+    <div class="sidebar__foot">SIGMA · Diseño por Estefany's Design</div>
+  </aside>
+
+  <div class="main-area">
+    <header class="topbar">
+      <button class="topbar__menu-btn" id="menu-btn" aria-label="Abrir menú" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div>
+        <div class="topbar__title" id="topbar-title">Dashboard</div>
+        <div class="topbar__subtitle" id="topbar-subtitle">Vista general del sistema</div>
+      </div>
+      <div class="topbar__spacer"></div>
+      <div class="topbar__system-status">
+        <span class="status-dot" aria-hidden="true"></span>
+        Sistema conectado
+      </div>
+      <div class="topbar__user">
+        <div class="avatar" id="user-avatar">AD</div>
+        <div>
+          <div class="topbar__user-name">Administrador</div>
+          <div class="topbar__user-role" id="user-email">admin@ieatturbo.edu.co</div>
+        </div>
+        <button class="topbar__logout" id="logout-btn" aria-label="Cerrar sesión" title="Cerrar sesión">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ============================================================
+         MÓDULO 2 · Dashboard principal
+         ============================================================ -->
+    <main class="view is-active" id="view-dashboard" data-view-panel="dashboard">
+      <div class="view-header">
+        <div>
+          <h2>Buen día, Administrador</h2>
+          <p>Resumen del estado del sistema hoy.</p>
+        </div>
+      </div>
+
+      <div class="metric-grid">
+        <div class="card metric-card">
+          <div class="metric-card__top">
+            <span class="metric-card__label">Estudiantes registrados</span>
+            <span class="metric-icon students"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
+          </div>
+          <div class="metric-card__value" id="metric-students">—</div>
+          <div class="metric-card__delta" id="metric-students-sub">— estudiantes activos hoy</div>
+        </div>
+
+        <div class="card metric-card">
+          <div class="metric-card__top">
+            <span class="metric-card__label">Asistencias de hoy</span>
+            <span class="metric-icon attendance"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></span>
+          </div>
+          <div class="metric-card__value" id="metric-attendance">—</div>
+          <div class="metric-card__delta" id="metric-attendance-delta">—</div>
+        </div>
+
+        <div class="card metric-card">
+          <div class="metric-card__top">
+            <span class="metric-card__label">Accesos realizados</span>
+            <span class="metric-icon access"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h4"/><path d="M9 3h6l6 6v10a2 2 0 0 1-2 2h-4"/></svg></span>
+          </div>
+          <div class="metric-card__value" id="metric-access">—</div>
+          <div class="metric-card__delta">registros del día</div>
+        </div>
+
+        <div class="card metric-card">
+          <div class="metric-card__top">
+            <span class="metric-card__label">Intentos fallidos</span>
+            <span class="metric-icon alerts"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+          </div>
+          <div class="metric-card__value" id="metric-failed">—</div>
+          <div class="metric-card__delta down">requieren revisión</div>
+        </div>
+      </div>
+
+      <div class="panel-grid">
+        <section class="card panel">
+          <div class="panel__head">
+            <h3>Últimos accesos</h3>
+            <button class="btn-ghost link-more" data-goto="registro-accesos">Ver todos</button>
+          </div>
+          <div class="record-table-head">
+            <span></span><span>Estudiante</span><span class="record-row__col-id">ID</span><span>Hora</span><span class="record-row__col-device">Dispositivo</span><span>Estado</span><span></span>
+          </div>
+          <div class="record-list" id="dashboard-recent-list"></div>
+        </section>
+
+        <section class="card panel">
+          <div class="panel__head">
+            <h3>Alertas recientes</h3>
+            <button class="btn-ghost link-more" data-goto="alertas">Ver todas</button>
+          </div>
+          <div class="alert-list" id="dashboard-alerts-list"></div>
+        </section>
+      </div>
+    </main>
+
+    <!-- ============================================================
+         MÓDULO 6 · Registro de accesos en tiempo real
+         ============================================================ -->
+    <main class="view" id="view-registro-accesos" data-view-panel="registro-accesos">
+      <div class="view-header">
+        <div>
+          <h2>Registro de accesos en tiempo real</h2>
+          <p>Registros enviados por los dispositivos ESP32-CAM instalados en cada puerta.</p>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-input">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" id="access-search" placeholder="Buscar estudiante o ID...">
+        </div>
+        <select class="select-filter" id="access-filter-status">
+          <option value="">Todos los estados</option>
+          <option value="permitido">Permitido</option>
+          <option value="denegado">Denegado</option>
+        </select>
+        <select class="select-filter" id="access-filter-device">
+          <option value="">Todos los dispositivos</option>
+        </select>
+      </div>
+
+      <section class="card panel">
+        <div class="record-table-head">
+          <span></span><span>Estudiante</span><span class="record-row__col-id">ID</span><span>Hora</span><span class="record-row__col-device">Dispositivo</span><span>Estado</span><span></span>
+        </div>
+        <div class="record-list" id="access-list"></div>
+        <div class="empty-state" id="access-empty" style="display:none;">
+          <div class="empty-state__icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+          <h4>Sin resultados</h4>
+          <p>No hay registros que coincidan con el filtro aplicado.</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============================================================
+         MÓDULO 7 · Estudiantes
+         ============================================================ -->
+    <main class="view" id="view-estudiantes" data-view-panel="estudiantes">
+      <div class="view-header">
+        <div>
+          <h2>Estudiantes</h2>
+          <p>Perfiles registrados en el sistema.</p>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-input">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" id="student-search" placeholder="Buscar estudiante...">
+        </div>
+        <select class="select-filter" id="student-filter-grade">
+          <option value="">Todos los grados</option>
+        </select>
+        <select class="select-filter" id="student-filter-status">
+          <option value="">Todos los estados</option>
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+          <option value="pendiente">Pendiente de registro</option>
+        </select>
+      </div>
+
+      <div class="student-grid" id="student-grid"></div>
+    </main>
+
+    <!-- ============================================================
+         MÓDULO 12 · Registro Biométrico (antes "Enrolamiento")
+         ============================================================ -->
+    <main class="view" id="view-biometrico" data-view-panel="biometrico">
+      <div class="view-header">
+        <div>
+          <h2>Registro Biométrico</h2>
+          <p>Vincula el rostro de un estudiante a su perfil para habilitar el acceso por reconocimiento facial.</p>
+        </div>
+      </div>
+
+      <div class="stepper" id="biometric-stepper">
+        <div class="stepper__step is-active" data-step="1"><span class="stepper__circle">1</span><span class="stepper__label">Estudiante</span></div>
+        <div class="stepper__line"></div>
+        <div class="stepper__step" data-step="2"><span class="stepper__circle">2</span><span class="stepper__label">Método</span></div>
+        <div class="stepper__line"></div>
+        <div class="stepper__step" data-step="3"><span class="stepper__circle">3</span><span class="stepper__label">Captura</span></div>
+        <div class="stepper__line"></div>
+        <div class="stepper__step" data-step="4"><span class="stepper__circle">4</span><span class="stepper__label">Confirmación</span></div>
+      </div>
+
+      <div class="card biometric-panel">
+
+        <!-- Paso 1 -->
+        <div class="biometric-step" id="bio-step-1">
+          <h3>Selecciona un estudiante</h3>
+          <p class="biometric-panel__hint">Busca por nombre o código estudiantil.</p>
+          <div class="student-picker">
+            <div class="search-input">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="search" id="bio-student-search" placeholder="Buscar estudiante...">
+            </div>
+            <div class="student-picker-list" id="bio-student-list"></div>
+          </div>
+          <div class="biometric-actions" style="margin-top:20px;">
+            <button class="btn btn-primary" id="bio-next-1" disabled>Continuar</button>
+          </div>
+        </div>
+
+        <!-- Paso 2 -->
+        <div class="biometric-step" id="bio-step-2" style="display:none;">
+          <h3>Selecciona el método de registro</h3>
+          <p class="biometric-panel__hint" id="bio-selected-student-label">—</p>
+          <div class="method-grid">
+            <button class="method-card" id="bio-method-facial" aria-pressed="false">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4M15 3h4a2 2 0 0 1 2 2v4M9 21H5a2 2 0 0 1-2-2v-4M15 21h4a2 2 0 0 0 2-2v-4"/><path d="M8 12a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z"/></svg>
+              Reconocimiento facial
+            </button>
+            <button class="method-card" disabled title="Disponible próximamente">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h.01M15 9h.01M9 15c.83.67 1.87 1 3 1s2.17-.33 3-1"/></svg>
+              Código QR (próximamente)
+            </button>
+          </div>
+          <div class="biometric-actions">
+            <button class="btn btn-secondary" id="bio-back-2">Atrás</button>
+            <button class="btn btn-primary" id="bio-next-2" disabled>Continuar</button>
+          </div>
+        </div>
+
+        <!-- Paso 3 -->
+        <div class="biometric-step" id="bio-step-3" style="display:none;">
+          <h3>Captura de imagen</h3>
+          <p class="biometric-panel__hint">Pide al estudiante posicionarse frente a la cámara.</p>
+          <div class="camera-frame" id="bio-camera-frame">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span id="bio-camera-text">Posicione su rostro</span>
+          </div>
+          <div class="feedback-line" id="bio-feedback"></div>
+          <div class="biometric-actions">
+            <button class="btn btn-secondary" id="bio-back-3">Atrás</button>
+            <button class="btn btn-primary" id="bio-capture-btn">Capturar imagen</button>
+          </div>
+        </div>
+
+        <!-- Paso 4 -->
+        <div class="biometric-step" id="bio-step-4" style="display:none;">
+          <h3 id="bio-result-title">Imagen capturada correctamente</h3>
+          <p class="biometric-panel__hint" id="bio-result-text">El estudiante ya puede acceder mediante reconocimiento facial.</p>
+          <div class="camera-frame state-ok" id="bio-result-frame">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+          </div>
+          <div class="biometric-actions">
+            <button class="btn btn-secondary" id="bio-restart">Registrar otro estudiante</button>
+            <button class="btn btn-primary" id="bio-finish" data-goto="estudiantes">Ir a estudiantes</button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ============================================================
+         MÓDULO 9 · Historial
+         ============================================================ -->
+    <main class="view" id="view-historial" data-view-panel="historial">
+      <div class="view-header">
+        <div>
+          <h2>Historial de registros</h2>
+          <p>Consulta accesos anteriores con filtros combinados.</p>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <input type="date" class="select-filter" id="hist-filter-date">
+        <select class="select-filter" id="hist-filter-student"><option value="">Todos los estudiantes</option></select>
+        <select class="select-filter" id="hist-filter-grade"><option value="">Todos los cursos</option></select>
+        <select class="select-filter" id="hist-filter-status">
+          <option value="">Todos los estados</option>
+          <option value="permitido">Permitido</option>
+          <option value="denegado">Denegado</option>
+        </select>
+        <select class="select-filter" id="hist-filter-device"><option value="">Todos los dispositivos</option></select>
+      </div>
+
+      <section class="card panel">
+        <div class="record-table-head">
+          <span></span><span>Estudiante</span><span class="record-row__col-id">ID</span><span>Hora</span><span class="record-row__col-device">Dispositivo</span><span>Estado</span><span></span>
+        </div>
+        <div class="record-list" id="history-list"></div>
+        <div class="empty-state" id="history-empty" style="display:none;">
+          <div class="empty-state__icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+          <h4>Sin resultados</h4>
+          <p>Ajusta los filtros para ver otros registros.</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============================================================
+         MÓDULO 10 · Reportes
+         ============================================================ -->
+    <main class="view" id="view-reportes" data-view-panel="reportes">
+      <div class="view-header">
+        <div>
+          <h2>Reportes</h2>
+          <p>Estadísticas del sistema. Datos simulados para la fase de diseño visual.</p>
+        </div>
+      </div>
+
+      <div class="report-grid">
+        <div class="card report-card">
+          <h3>Asistencia por día</h3>
+          <p class="report-card__sub">Última semana</p>
+          <svg class="chart-svg" id="chart-attendance-day" viewBox="0 0 320 160"></svg>
+        </div>
+        <div class="card report-card">
+          <h3>Ingresos por hora</h3>
+          <p class="report-card__sub">Distribución de hoy</p>
+          <svg class="chart-svg" id="chart-entries-hour" viewBox="0 0 320 160"></svg>
+        </div>
+        <div class="card report-card">
+          <h3>Porcentaje de asistencia por curso</h3>
+          <p class="report-card__sub">Promedio del mes</p>
+          <svg class="chart-svg" id="chart-attendance-course" viewBox="0 0 320 160"></svg>
+        </div>
+        <div class="card report-card">
+          <h3>Intentos fallidos</h3>
+          <p class="report-card__sub">Última semana</p>
+          <svg class="chart-svg" id="chart-failed-attempts" viewBox="0 0 320 160"></svg>
+        </div>
+      </div>
+    </main>
+
+    <!-- ============================================================
+         MÓDULO 11 · Alertas
+         ============================================================ -->
+    <main class="view" id="view-alertas" data-view-panel="alertas">
+      <div class="view-header">
+        <div>
+          <h2>Alertas del sistema</h2>
+          <p>Situaciones que requieren atención del administrador.</p>
+        </div>
+      </div>
+      <div class="alert-list" id="alerts-full-list"></div>
+    </main>
+
+    <!-- ============================================================
+         Configuración
+         ============================================================ -->
+    <main class="view" id="view-configuracion" data-view-panel="configuracion">
+      <div class="view-header">
+        <div>
+          <h2>Configuración</h2>
+          <p>Preferencias de cuenta y del sistema.</p>
+        </div>
+      </div>
+
+      <div class="settings-grid">
+        <section class="card settings-section">
+          <h3>Perfil</h3>
+          <div class="settings-row">
+            <div>
+              <div class="settings-row__label">Nombre</div>
+              <div class="settings-row__hint">Administrador · IEAT Turbo</div>
+            </div>
+            <button class="btn btn-secondary btn-sm">Editar</button>
+          </div>
+          <div class="settings-row">
+            <div>
+              <div class="settings-row__label">Correo</div>
+              <div class="settings-row__hint" id="settings-email">admin@ieatturbo.edu.co</div>
+            </div>
+            <button class="btn btn-secondary btn-sm">Editar</button>
+          </div>
+          <div class="settings-row">
+            <div>
+              <div class="settings-row__label">Contraseña</div>
+              <div class="settings-row__hint">Última actualización hace 30 días</div>
+            </div>
+            <button class="btn btn-secondary btn-sm">Cambiar</button>
+          </div>
+        </section>
+
+        <section class="card settings-section">
+          <h3>Notificaciones</h3>
+          <div class="settings-row">
+            <div>
+              <div class="settings-row__label">Intentos fallidos</div>
+              <div class="settings-row__hint">Avisar ante accesos denegados</div>
+            </div>
+            <label class="switch"><input type="checkbox" checked><span class="track"></span></label>
+          </div>
+          <div class="settings-row">
+            <div>
+              <div class="settings-row__label">Dispositivos sin conexión</div>
+              <div class="settings-row__hint">Avisar si una cámara se desconecta</div>
+            </div>
+            <label class="switch"><input type="checkbox" checked><span class="track"></span></label>
+          </div>
+          <div class="settings-row">
+            <div>
+              <div class="settings-row__label">Resumen diario por correo</div>
+              <div class="settings-row__hint">Recibir un resumen cada tarde</div>
+            </div>
+            <label class="switch"><input type="checkbox"><span class="track"></span></label>
+          </div>
+        </section>
+
+        <section class="card settings-section">
+          <h3>Dispositivos</h3>
+          <div id="settings-devices-list"></div>
+        </section>
+
+        <section class="card settings-section">
+          <h3>Apariencia</h3>
+          <div class="settings-row">
+            <div>
+              <div class="settings-row__label">Reducir animaciones</div>
+              <div class="settings-row__hint">Respeta la preferencia del sistema operativo</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="settings-reduce-motion"><span class="track"></span></label>
+          </div>
+        </section>
+      </div>
+    </main>
+
+  </div>
+</div>
+
+<!-- Modal genérico: perfil de estudiante / detalle de acceso -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title"></div>
+</div>
+
+<div class="toast-region" id="toast-region" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
+
