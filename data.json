@@ -1,0 +1,214 @@
+{
+  "institucion": {
+    "nombre": "SIGMA",
+    "subtitulo": "IEAT Turbo · Control de acceso y asistencia",
+    "logoIniciales": "SG"
+  },
+  "sesion": {
+    "usuarioDemo": "admin@ieatturbo.edu.co",
+    "claveDemo": "sigma2026"
+  },
+  "estadisticas": {
+    "estudiantesRegistrados": 1250,
+    "estudiantesActivosHoy": 50,
+    "asistenciasHoy": 45,
+    "cambioAsistenciaAyer": 12,
+    "accesosHoy": 48,
+    "intentosFallidos": 8,
+    "totalAsistenciasHistorico": 875,
+    "totalAlertas": 8
+  },
+  "dispositivos": [
+    { "id": "esp32-a", "nombre": "ESP32-CAM Puerta A", "ubicacion": "Entrada principal", "estado": "conectado" },
+    { "id": "esp32-b", "nombre": "ESP32-CAM Puerta B", "ubicacion": "Entrada secundaria", "estado": "desconectado" },
+    { "id": "esp32-c", "nombre": "ESP32-CAM Coordinación", "ubicacion": "Bloque administrativo", "estado": "conectado" }
+  ],
+  "estudiantes": [
+    {
+      "id": "1020",
+      "nombre": "Elba Zurita",
+      "iniciales": "EZ",
+      "grado": "11°",
+      "estado": "activo",
+      "fechaRegistro": "2026-01-15",
+      "ultimoAcceso": "Hoy · 7:02 AM",
+      "horaEntrada": "7:02 AM",
+      "horaSalida": "12:30 PM",
+      "asistencias": 92,
+      "biometriaRegistrada": true,
+      "historialReciente": [
+        { "fecha": "Hoy", "hora": "7:02 AM", "tipo": "Entrada", "estado": "permitido" },
+        { "fecha": "Ayer", "hora": "7:05 AM", "tipo": "Entrada", "estado": "permitido" },
+        { "fecha": "Ayer", "hora": "12:31 PM", "tipo": "Salida", "estado": "permitido" }
+      ]
+    },
+    {
+      "id": "1021",
+      "nombre": "Juan Pérez",
+      "iniciales": "JP",
+      "grado": "10°",
+      "estado": "activo",
+      "fechaRegistro": "2026-01-15",
+      "ultimoAcceso": "Hoy · 7:05 AM",
+      "horaEntrada": "7:05 AM",
+      "horaSalida": "12:32 PM",
+      "asistencias": 88,
+      "biometriaRegistrada": true,
+      "historialReciente": [
+        { "fecha": "Hoy", "hora": "7:05 AM", "tipo": "Entrada", "estado": "permitido" },
+        { "fecha": "Ayer", "hora": "7:10 AM", "tipo": "Entrada", "estado": "permitido" }
+      ]
+    },
+    {
+      "id": "102030",
+      "nombre": "María Luna",
+      "iniciales": "ML",
+      "grado": "11°",
+      "estado": "activo",
+      "fechaRegistro": "2026-01-20",
+      "ultimoAcceso": "Hoy · 7:02 AM",
+      "horaEntrada": "7:02 AM",
+      "horaSalida": "—",
+      "asistencias": 92,
+      "biometriaRegistrada": true,
+      "historialReciente": [
+        { "fecha": "Hoy", "hora": "7:02 AM", "tipo": "Entrada", "estado": "permitido" },
+        { "fecha": "Ayer", "hora": "7:01 AM", "tipo": "Entrada", "estado": "permitido" },
+        { "fecha": "Ayer", "hora": "12:28 PM", "tipo": "Salida", "estado": "permitido" }
+      ]
+    },
+    {
+      "id": "102031",
+      "nombre": "Juan Pérez Gómez",
+      "iniciales": "JG",
+      "grado": "10°",
+      "estado": "activo",
+      "fechaRegistro": "2026-01-20",
+      "ultimoAcceso": "Ayer · 7:12 AM",
+      "horaEntrada": "7:12 AM",
+      "horaSalida": "12:35 PM",
+      "asistencias": 79,
+      "biometriaRegistrada": true,
+      "historialReciente": [
+        { "fecha": "Ayer", "hora": "7:12 AM", "tipo": "Entrada", "estado": "permitido" }
+      ]
+    },
+    {
+      "id": "1030",
+      "nombre": "Alan Brito",
+      "iniciales": "AB",
+      "grado": "9°",
+      "estado": "inactivo",
+      "fechaRegistro": "2026-02-02",
+      "ultimoAcceso": "Hace 3 días",
+      "horaEntrada": "—",
+      "horaSalida": "—",
+      "asistencias": 41,
+      "biometriaRegistrada": false,
+      "historialReciente": [
+        { "fecha": "Hoy", "hora": "7:08 AM", "tipo": "Entrada", "estado": "denegado" }
+      ]
+    },
+    {
+      "id": "1042",
+      "nombre": "Camila Restrepo",
+      "iniciales": "CR",
+      "grado": "8°",
+      "estado": "activo",
+      "fechaRegistro": "2026-02-10",
+      "ultimoAcceso": "Hoy · 6:58 AM",
+      "horaEntrada": "6:58 AM",
+      "horaSalida": "—",
+      "asistencias": 97,
+      "biometriaRegistrada": true,
+      "historialReciente": [
+        { "fecha": "Hoy", "hora": "6:58 AM", "tipo": "Entrada", "estado": "permitido" }
+      ]
+    },
+    {
+      "id": "1055",
+      "nombre": "Santiago Mosquera",
+      "iniciales": "SM",
+      "grado": "9°",
+      "estado": "pendiente",
+      "fechaRegistro": "2026-03-01",
+      "ultimoAcceso": "Sin registros",
+      "horaEntrada": "—",
+      "horaSalida": "—",
+      "asistencias": 0,
+      "biometriaRegistrada": false,
+      "historialReciente": []
+    }
+  ],
+  "accesos": [
+    { "id": "a-1001", "estudianteId": "1020", "estudiante": "Elba Zurita", "iniciales": "EZ", "fecha": "Hoy", "hora": "7:02 AM", "tipo": "Entrada", "dispositivo": "ESP32 Puerta A", "estado": "permitido" },
+    { "id": "a-1002", "estudianteId": "1021", "estudiante": "Juan Pérez", "iniciales": "JP", "fecha": "Hoy", "hora": "7:05 AM", "tipo": "Entrada", "dispositivo": "ESP32 Puerta A", "estado": "permitido" },
+    { "id": "a-1003", "estudianteId": "1030", "estudiante": "Alan Brito", "iniciales": "AB", "fecha": "Hoy", "hora": "7:08 AM", "tipo": "Entrada", "dispositivo": "ESP32 Puerta A", "estado": "denegado" },
+    { "id": "a-1004", "estudianteId": "1042", "estudiante": "Camila Restrepo", "iniciales": "CR", "fecha": "Hoy", "hora": "6:58 AM", "tipo": "Entrada", "dispositivo": "ESP32 Puerta B", "estado": "permitido" },
+    { "id": "a-1005", "estudianteId": "102030", "estudiante": "María Luna", "iniciales": "ML", "fecha": "Hoy", "hora": "7:02 AM", "tipo": "Entrada", "dispositivo": "ESP32 Coordinación", "estado": "permitido" },
+    { "id": "a-1006", "estudianteId": "102031", "estudiante": "Juan Pérez Gómez", "iniciales": "JG", "fecha": "Ayer", "hora": "7:12 AM", "tipo": "Entrada", "dispositivo": "ESP32 Puerta A", "estado": "permitido" },
+    { "id": "a-1007", "estudianteId": "1020", "estudiante": "Elba Zurita", "iniciales": "EZ", "fecha": "Ayer", "hora": "12:31 PM", "tipo": "Salida", "dispositivo": "ESP32 Puerta A", "estado": "permitido" }
+  ],
+  "alertas": [
+    {
+      "id": "al-1",
+      "nivel": "critico",
+      "titulo": "Usuario no identificado",
+      "descripcion": "Rostro no coincide con ningún registro biométrico activo.",
+      "dispositivo": "Puerta principal",
+      "hora": "7:45 AM"
+    },
+    {
+      "id": "al-2",
+      "nivel": "advertencia",
+      "titulo": "Cámara desconectada",
+      "descripcion": "El dispositivo dejó de enviar señal hace 6 minutos.",
+      "dispositivo": "Entrada secundaria",
+      "hora": "7:30 AM"
+    },
+    {
+      "id": "al-3",
+      "nivel": "exito",
+      "titulo": "Sistema conectado",
+      "descripcion": "Todos los dispositivos están reportando correctamente.",
+      "dispositivo": "ESP32-CAM Principal",
+      "hora": "6:45 AM"
+    },
+    {
+      "id": "al-4",
+      "nivel": "advertencia",
+      "titulo": "Iluminación insuficiente",
+      "descripcion": "La calidad de imagen puede afectar el reconocimiento.",
+      "dispositivo": "Puerta A",
+      "hora": "6:40 AM"
+    }
+  ],
+  "reportes": {
+    "asistenciaPorDia": [
+      { "dia": "Lun", "valor": 88 },
+      { "dia": "Mar", "valor": 92 },
+      { "dia": "Mié", "valor": 85 },
+      { "dia": "Jue", "valor": 90 },
+      { "dia": "Vie", "valor": 78 }
+    ],
+    "ingresosPorHora": [
+      { "hora": "6-7am", "valor": 12 },
+      { "hora": "7-8am", "valor": 64 },
+      { "hora": "8-9am", "valor": 18 },
+      { "hora": "9-10am", "valor": 4 }
+    ],
+    "asistenciaPorCurso": [
+      { "curso": "8°", "valor": 94 },
+      { "curso": "9°", "valor": 81 },
+      { "curso": "10°", "valor": 88 },
+      { "curso": "11°", "valor": 90 }
+    ],
+    "intentosFallidosPorDia": [
+      { "dia": "Lun", "valor": 3 },
+      { "dia": "Mar", "valor": 1 },
+      { "dia": "Mié", "valor": 5 },
+      { "dia": "Jue", "valor": 2 },
+      { "dia": "Vie", "valor": 8 }
+    ]
+  }
+}
